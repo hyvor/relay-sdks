@@ -42,3 +42,18 @@ The SDK must
     - creating a domain
     - handling webhooks
     - error handling
+
+## Running tests
+
+### JS
+
+```bash
+docker compose run --rm js-test-node
+docker compose run --rm js-test-bun
+```
+
+### Publishing
+
+The JS SDK is published to npm via `.github/workflows/publish-js.yml`, triggered by pushing a tag
+matching `js-v*.*.*` (e.g. `js-v0.1.0`). This requires an `NPM_TOKEN` secret with publish access to be
+configured in the repository settings.
