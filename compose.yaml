@@ -1,0 +1,22 @@
+services:
+  js-test-node:
+    build:
+      context: .
+      target: js-node
+    volumes:
+      - ./js:/app/js
+      - js-node-modules:/app/js/node_modules
+    command: npm test
+
+  js-test-bun:
+    build:
+      context: .
+      target: js-bun
+    volumes:
+      - ./js:/app/js
+      - js-bun-node-modules:/app/js/node_modules
+    command: bun run test
+
+volumes:
+  js-node-modules:
+  js-bun-node-modules:
