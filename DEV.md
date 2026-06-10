@@ -1,0 +1,44 @@
+Rules for developing a SDK:
+
+The SDK must
+
+- support all endpoints of the [Console API](https://relay.hyvor.com/docs/api-console).
+- fully support or help with handling [Webhooks](https://relay.hyvor.com/docs/webhooks)
+- use typed DTOs for request and response objects.
+    - when a field supports multiple types, prefer using the object type (ex: use an Address object instead of a string email address).
+    - if the language supports it, use enums
+- return (ex: Rust) or throw (ex: PHP) custom errors (ValidationFailedError, ServerError, RateLimits) that can be used to handle errors gracefully.
+- support injecting a logger and HTTP client for testing, mocking, and debugging.
+- set the `User-Agent` header in API requests to `hyvor/relay-{language}/{version}` (ex: `hyvor/relay-php/1.0.0`)
+- have 100% code coverage, with Github Actions based CI.
+- use semantic versioning
+    - all packages would have the same major version, but minor and patch versions can differ for each package
+- have global options for the following:
+    - API key
+    - Base URL (default: `https://relay.hyvor.com`)
+    - connection timeout ms (default: 5000)
+    - request timeout ms (default: 10000)
+    - retry max attempts (default: 3)
+    - retry backoff factor (default: 2)
+    - logger
+    - HTTP client (use an abstract interface whenever possible, ex: PSR-18 for PHP)
+- have methods for the API based on their namespace
+    - `sends.send()` for sending a message
+    - `sends.list()` for getting sends
+    - `sends.get()` for getting a send by ID
+    - `domains.list()` for getting domains
+    - etc.
+    - (generally, each namespace would be contained in a class / module)
+- support function-level options that can override global options (ex: timeout, retry attempts)
+- support idempotency key for `sends.send()` in options
+- Webhooks:
+    - have a function (controller) that takes a request object and sometimes emits an event for the received event  (in PHP, JS) or returns a result (in Rust) that can be used to handle the event.
+    - function should take the webhook secret and verify the signature of the request
+    - use must be able to set up the route they need (with support for multiple routes if needed)
+-  have a README.md with usage instructions for the following:
+    - installation
+    - initialization
+    - sending an email
+    - creating a domain
+    - handling webhooks
+    - error handling
